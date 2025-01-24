@@ -23,8 +23,8 @@ jobs:
       - name: Deploy to server
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.C_HOST }}
-          username: ${{ secrets.C_USER }}
-          password: ${{ secrets.C_PASS }}
+          host: ${{ secrets.CLOUD_HOST }}
+          username: ${{ secrets.CLOUD_USER }}
+          password: ${{ secrets.CLOUD_PASS }}
           source: "DataRoom/dataroom-server/target/*.jar"
           target: "/opt/dataroom"
