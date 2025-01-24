@@ -403,3 +403,4 @@ build/
 application-*.yml
 !application-demo.yml
 !application-h2.yml
+!application-dev.yml
