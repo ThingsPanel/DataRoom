@@ -1,0 +1,30 @@
+name: Backend Build and Deploy
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Build with Maven
+        run: |
+          cd DataRoom
+          mvn clean package -Dmaven.test.skip=true -P package
+        
+      - name: Deploy to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.C_HOST }}
+          username: ${{ secrets.C_USER }}
+          password: ${{ secrets.C_PASS }}
+          source: "DataRoom/dataroom-server/target/*.jar"
+          target: "/opt/dataroom"
