@@ -28,5 +28,4 @@ jobs:
           password: ${{ secrets.CLOUD_PASS }}
           source: "DataRoom/dataroom-server/target/dataroom-server.jar"
           target: "/opt/dataroom"
-          strip_components: 4
           overwrite: true
