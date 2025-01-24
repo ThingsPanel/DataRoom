@@ -26,5 +26,6 @@ jobs:
           host: ${{ secrets.CLOUD_HOST }}
           username: ${{ secrets.CLOUD_USER }}
           password: ${{ secrets.CLOUD_PASS }}
-          source: "DataRoom/dataroom-server/target/*.jar"
+          source: "DataRoom/dataroom-server/target/dataroom-server.jar"
           target: "/opt/dataroom"
+          strip_components: 4
