@@ -29,3 +29,14 @@ jobs:
           source: "DataRoom/dataroom-server/target/dataroom-server.jar"
           target: "/opt/dataroom"
           overwrite: true
+
+      - name: Restart Service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CLOUD_HOST }}
+          username: ${{ secrets.CLOUD_USER }}
+          password: ${{ secrets.CLOUD_PASS }}
+          script: |
+            systemctl restart dataroom
+            sleep 5
+            systemctl status dataroom
