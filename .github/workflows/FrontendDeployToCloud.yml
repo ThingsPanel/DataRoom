@@ -1,5 +1,4 @@
 name: Deploy DataRoom UI
-
 on:
   push:
     branches: [ master ]
@@ -7,34 +6,38 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@v3
     
-    - name: Setup Node.js
+    - name: Setup Node.js and npm
       uses: actions/setup-node@v3
       with:
         node-version: '14.x'
         
-    - name: Setup npm
-      run: |
-        npm install -g npm@6.x
-        
-    - name: Install Dependencies
-      working-directory: ./data-room-ui
-      run: npm install
-        
     - name: Build
       working-directory: ./data-room-ui
-      run: npm run build
+      run: |
+        npm install -g npm@6.x
+        npm install
+        npm run build
+        cd dist && tar -czf ../../deploy.tar.gz ./*
         
-    - name: Deploy to Server
+    - name: Upload to server
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.CLOUD_HOST }}
         username: ${{ secrets.CLOUD_USER }}
         password: ${{ secrets.CLOUD_PASS }}
-        source: "data-room-ui/dist/*"
+        source: "deploy.tar.gz"
         target: "/opt/dataroom/frontend"
-        strip_components: 2
+        
+    - name: Extract on server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.CLOUD_HOST }}
+        username: ${{ secrets.CLOUD_USER }}
+        password: ${{ secrets.CLOUD_PASS }}
+        script: |
+          cd /opt/dataroom/frontend
+          tar -xzf deploy.tar.gz && rm deploy.tar.gz
