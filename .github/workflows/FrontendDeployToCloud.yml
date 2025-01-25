@@ -1,0 +1,40 @@
+name: Deploy DataRoom UI
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14.x'
+        
+    - name: Setup npm
+      run: |
+        npm install -g npm@6.x
+        
+    - name: Install Dependencies
+      working-directory: ./data-room-ui
+      run: npm install
+        
+    - name: Build
+      working-directory: ./data-room-ui
+      run: npm run build
+        
+    - name: Deploy to Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.CLOUD_HOST }}
+        username: ${{ secrets.CLOUD_USER }}
+        password: ${{ secrets.CLOUD_PASS }}
+        source: "data-room-ui/dist/*"
+        target: "/opt/dataroom/frontend"
+        strip_components: 2
